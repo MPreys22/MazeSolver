@@ -67,52 +67,23 @@ public class MazeSolver {
         while(current != maze.getEndCell()) {
             int row = current.getRow();
             int col = current.getCol();
-            if(maze.isValidCell(row-1, col)) {
-                if(!maze.getCell(row-1, col).isExplored()) {
-                    if(maze.getCell(row-1, col) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row-1, col).setParent(current);
-                    maze.getCell(row-1, col).setExplored(true);
-                    ctv.push(maze.getCell(row-1, col));
-                }
-            }
-            if(maze.isValidCell(row, col+1)) {
-                if(!maze.getCell(row, col+1).isExplored()) {
-                    if(maze.getCell(row, col+1) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row, col+1).setParent(current);
-                    ctv.push(maze.getCell(row, col+1));
-                    maze.getCell(row, col+1).setExplored(true);
-                }
-            }
-            if(maze.isValidCell(row+1, col)) {
-                if(!maze.getCell(row+1, col).isExplored()) {
-                    if(maze.getCell(row+1, col) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row+1, col).setParent(current);
-                    maze.getCell(row+1, col).setExplored(true);
-                    ctv.push(maze.getCell(row+1, col));
-
-                }
-            }
-            if(maze.isValidCell(row, col-1)) {
-                if(!maze.getCell(row, col-1).isExplored()) {
-                    if(maze.getCell(row, col-1) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row, col-1).setParent(current);
-                    maze.getCell(row, col-1).setExplored(true);
-                    ctv.push(maze.getCell(row, col-1));
-
-                }
-            }
+            neighborCellStack(row-1, col, current, ctv);
+            neighborCellStack(row, col+1, current, ctv);
+            neighborCellStack(row+1, col, current, ctv);
+            neighborCellStack(row, col-1, current, ctv);
             // Change current to next value in cells to visit
             current = ctv.pop();
         }
         return getSolution();
+    }
+
+    // Make sure cell is valid and if not explored set the parent to current and add to ctv as well as make explored
+    public void neighborCellStack(int row, int col, MazeCell current, Stack<MazeCell> ctv) {
+        if(maze.isValidCell(row, col)) {
+            maze.getCell(row, col).setParent(current);
+            maze.getCell(row, col).setExplored(true);
+            ctv.push(maze.getCell(row, col));
+        }
     }
 
     /**
@@ -129,59 +100,25 @@ public class MazeSolver {
             int row = current.getRow();
             int col = current.getCol();
 
-            if(maze.isValidCell(row-1, col)) {
-                if(!maze.getCell(row-1, col).isExplored()) {
-                    // Makes sure end has a parent cell
-                    if(maze.getCell(row-1, col) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    // Sets the parent and puts it in the explored section as well as cells to add
-                    maze.getCell(row-1, col).setParent(current);
-                    maze.getCell(row-1, col).setExplored(true);
-                    ctv.add(maze.getCell(row-1, col));
-                }
-            }
-
-            if(maze.isValidCell(row, col+1)) {
-                if(!maze.getCell(row, col+1).isExplored()) {
-                    if(maze.getCell(row, col+1) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row, col+1).setParent(current);
-                    ctv.add(maze.getCell(row, col+1));
-                    maze.getCell(row, col+1).setExplored(true);
-                }
-            }
-
-            if(maze.isValidCell(row+1, col)) {
-                if(!maze.getCell(row+1, col).isExplored()) {
-                    if(maze.getCell(row+1, col) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row+1, col).setParent(current);
-                    maze.getCell(row+1, col).setExplored(true);
-                    ctv.add(maze.getCell(row+1, col));
-
-                }
-            }
-
-            if(maze.isValidCell(row, col-1)) {
-                if(!maze.getCell(row, col-1).isExplored()) {
-                    if(maze.getCell(row, col-1) == maze.getEndCell() && maze.getEndCell().isExplored() == false) {
-                        maze.getEndCell().setParent(current);
-                    }
-                    maze.getCell(row, col-1).setParent(current);
-                    maze.getCell(row, col-1).setExplored(true);
-                    ctv.add(maze.getCell(row, col-1));
-
-                }
-            }
+            neighborCellQueue(row-1, col, current, ctv);
+            neighborCellQueue(row, col+1, current, ctv);
+            neighborCellQueue(row+1, col, current, ctv);
+            neighborCellQueue(row, col-1, current, ctv);
             // Change current to next value in cells to visit
             current = ctv.remove();
         }
         return getSolution();
     }
 
+    // Same as neighbor cell stack but with a queue
+    public void neighborCellQueue(int row, int col, MazeCell current, Queue<MazeCell> ctv) {
+        if(maze.isValidCell(row, col)) {
+            maze.getCell(row, col).setParent(current);
+            maze.getCell(row, col).setExplored(true);
+            ctv.add(maze.getCell(row, col));
+
+        }
+    }
 
     public static void main(String[] args) {
         // Create the Maze to be solved
